@@ -20,8 +20,12 @@ namespace ProductInfra
             });
 
             // Reference the existing ECR repository using the correct ARN
-            var repository = Repository.FromRepositoryArn(this, "EcrRepo",
-                "arn:aws:ecr:us-east-1:876143322976:repository/product-app");
+            var region = System.Environment.GetEnvironmentVariable("CDK_DEFAULT_REGION");
+            var account = System.Environment.GetEnvironmentVariable("CDK_DEFAULT_ACCOUNT");
+
+            var ecrArn = $"arn:aws:ecr:{region}:{account}:repository/product-app";
+
+            var repository = Repository.FromRepositoryArn(this, "EcrRepo", ecrArn);
 
             var fargateService = new ApplicationLoadBalancedFargateService(this, "FargateService", new ApplicationLoadBalancedFargateServiceProps
             {

@@ -11,7 +11,7 @@ namespace ProductInfra
             var env = new Amazon.CDK.Environment
             {
                 Account = System.Environment.GetEnvironmentVariable("CDK_DEFAULT_ACCOUNT"),
-                Region = "us-east-1"
+                Region = System.Environment.GetEnvironmentVariable("CDK_DEFAULT_REGION")
             };
 
             var networkStack = new NetworkStack(app, "NetworkStacks", new StackProps
