@@ -78,6 +78,17 @@ jobs:
       - name: Install dependencies
         run: dotnet restore src/ProductInfra/ProductInfra.csproj
 
+      - name: Build and Push Docker Image
+        run: |
+          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+          
+          docker build -t product-app ./ProductApp
+          docker tag product-app:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/product-app:latest
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/product-app:latest
+
+      - name: Bootstrap production environment
+        run: cdk bootstrap
+
       - name: CDK Deploy Production
         run: |
           cdk deploy --all --require-approval never
