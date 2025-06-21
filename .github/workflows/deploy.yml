@@ -52,9 +52,6 @@ jobs:
       url: ${{ steps.geturl.outputs.url }}
 
     steps:
-      - name: Wait for manual approval
-        uses: hmarr/auto-approve-action@v2.0.0
-
       - name: Checkout code
         uses: actions/checkout@v3
 
