@@ -19,7 +19,7 @@ namespace ProductInfra
                 Vpc = vpc
             });
 
-            // Reference your existing ECR repository
+            // Reference the existing ECR repository using the correct ARN
             var repository = Repository.FromRepositoryArn(this, "EcrRepo",
                 "arn:aws:ecr:us-east-1:876143322976:repository/product-app");
 
@@ -30,13 +30,13 @@ namespace ProductInfra
                 ListenerPort = 80,
                 TaskImageOptions = new ApplicationLoadBalancedTaskImageOptions
                 {
-                    Image = ContainerImage.FromEcrRepository(repository),
+                    Image = ContainerImage.FromEcrRepository(repository, "latest"),  // Use specific tag
                     ContainerPort = 80
                 },
                 PublicLoadBalancer = true
             });
 
-            // Safely cast IRole to Role to use AddToPolicy
+            // Grant ECR pull permissions to the ECS Task Execution Role
             var executionRole = fargateService.TaskDefinition.ExecutionRole as Role;
 
             if (executionRole != null)
